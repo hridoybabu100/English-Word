@@ -92,6 +92,17 @@ const lessonData = () => {
     
  }
 
+ //Spiner Funtion 
+  const spinner = (status) => {
+    if( status == true ){
+        document.getElementById("spinner").classList.remove("hidden");
+        document.getElementById("word-Container").classList.add("hidden")
+    }else{
+         document.getElementById("word-Container").classList.remove("hidden");
+        document.getElementById("spinner").classList.add("hidden")
+    }
+  }
+
 //lession button dispaly te show
  const lessionDisplay = (lessions) => {
     // jeikhne button gula rakhbo
@@ -112,7 +123,7 @@ const lessonData = () => {
  }
 
  const loadbtn = (id) => {
-    
+    spinner(true);
     const url = `https://openapi.programming-hero.com/api/level/${id}`
     fetch(url)
     .then((res) => res.json())
@@ -120,13 +131,52 @@ const lessonData = () => {
         const clickBtn = document.getElementById(`lession-btn-${id}`);
         removeActiveBtn();
         // console.log(clickBtn);
-        clickBtn.classList.add("active")
+        clickBtn.classList.add("active");
         loadWord(data.data);
         
     }) 
  }
+
+//  loadinfoDetails 
+
+ const loadinfoDetails = (id) => {
+    const url = `https://openapi.programming-hero.com/api/word/${id}`
+    fetch(url)
+    .then((res) => res.json())
+    .then((data) => {
+        loadinfoDisplay(data.data);
+        
+    })  
+ }
+
+ const loadinfoDisplay = (word) => {
+    // console.log(word);
+    const infoContainer = document.getElementById('info-Container');
+    // console.log(infoContainer);
+    infoContainer.innerHTML = `
+          <div class="bg-white space-y-3 border p-10">
+                        <div>
+                            <h1>${word.word}</h1>
+                            <h1>${word.meaning}</h1>
+                        </div>
+                        <div>
+                            <h1>${word.pronunciation}</h1>
+                            <h1>${word.sentence}</h1>
+                        </div>
+                        <div>
+                            <span class="btn">A</span>
+                            <span class="btn">B</span>
+                            <span class="btn">C</span>
+                        </div>
+                    </div>
+    `
+    document.getElementById('my_modal_1').showModal();
+    
+    
+ }
  // loadBtn e display te show korate hbe
  const loadWord = (words) => {
+    // spinner(true);
     //Jeikhne Rakhbo
     const wordContainer = document.getElementById("word-Container");
     wordContainer.innerHTML = " ";
@@ -140,6 +190,7 @@ const lessonData = () => {
         <p class="text-2xl">Plz! Return The Next Page</p>
     </div>
        `;
+       spinner(false);
         return;
     }
     
@@ -154,7 +205,7 @@ const lessonData = () => {
             <p class="text-2xl ">${word.pronunciation}</p>
 
         <div class="flex items-center justify-between">
-            <span class="btn"><i class="fa-solid fa-circle-info"></i></span>
+            <span onclick="loadinfoDetails(${word.id})" class="btn"><i class="fa-solid fa-circle-info"></i></span>
             <span class="btn"><i class="fa-solid fa-microphone"></i></span>
         </div>
 
@@ -162,8 +213,8 @@ const lessonData = () => {
         `
         //apends to container
         wordContainer.appendChild(newDiv);
-        
     })
+    spinner(false);
     
  }
 lessonData();
